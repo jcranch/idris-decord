@@ -1,0 +1,5 @@
+[custom.all.decord]
+type = "local"
+path = "."
+ipkg = "decord.ipkg"
+test = "test/test.ipkg"

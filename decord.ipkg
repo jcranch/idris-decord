@@ -1,0 +1,13 @@
+package decord
+version = 0.1.0
+authors = "James Cranch <cranch@cantab.net>"
+sourceloc = "https://github.com/jcranch/idris-decord"
+license = "BSD3"
+brief = "Support for decidable orderings, equalities (and relations with Eq and Ord)"
+
+modules = Control.Relation.TotalOrder,
+          Decidable.Equality.Eq,
+          Decidable.EqOrd,
+          Decidable.Ordering
+
+sourcedir = "src"
