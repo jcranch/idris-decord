@@ -14,3 +14,27 @@ This Idris library does several things:
 
 * `Decidable.Ordering` contains a framework for decidable orderings,
   compatible with `Ord` instances.
+
+## Things still to do
+
+* `Control.Relation.TotalOrder`
+
+    * For usage-related reasons, I can't prove the lemma
+
+        ```
+        totalOrderAntisymmetry : (Irreflexive a r, Transitive a r) => r x y -> r y x -> Void
+		```
+
+* `Decidable.Equality.Eq`
+
+    * I haven't provided an `EqIsDec` instance for dependent pairs.
+
+* `Decidable.Ordering`
+
+	* There is nothing yet for dependent pairs.
+
+	* I haven't yet proved that `(a, b)` is `DecOrd`. This should be
+      possible under suitable hypotheses on `a` and `b`, but it is
+      slightly tricky, because the `Ord` instance for `(a, b)` uses
+      `Eq`, so we need compatibility between `Eq` and `Ord`.
+

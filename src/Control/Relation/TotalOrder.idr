@@ -6,7 +6,7 @@ import Decidable.Equality
 
 
 public export
-interface Irreflexive a r | r where
+interface Irreflexive (0 a : Type) (0 r : a -> a -> Type) | r where
   irrefl : {0 x : a} -> r x x -> Void
 
 ||| Alternative version of irreflexivity
@@ -24,14 +24,13 @@ Irreflexive Nat LT where
 
 
 {-
--- Can't get this to work for quantity reasons, which seems suspect
-totalOrderAntisymmetry : (Irreflexive a r, Transitive a r) => r x y -> r y x -> Void
+totalOrderAntisymmetry : (Irreflexive a r, Transitive a r) => {0 x : a} -> {0 y : a} -> r x y -> r y x -> Void
 totalOrderAntisymmetry p q = irrefl (transitive p q)
 -}
 
 
 public export
-data Trichotomy : (r : a -> a -> Type) -> a -> a -> Type where
+data Trichotomy : (0 r : a -> a -> Type) -> a -> a -> Type where
   LT : {0 x : a} -> {0 y : a} -> r x y -> Trichotomy r x y
   EQ : x = y -> Trichotomy r x y
   GT : {0 x : a} -> {0 y : a} -> r y x -> Trichotomy r x y
@@ -74,5 +73,3 @@ interface (Irreflexive a r, (Transitive a r, Trichotomous a r)) => TotalOrder a 
 
 public export
 TotalOrder Nat LT where
-
-

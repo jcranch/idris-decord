@@ -57,3 +57,69 @@ EqIsDec Nat where
   eqDecides (S m) 0 = No absurd
   eqDecides 0 (S n) = No absurd
   eqDecides (S m) (S n) = decSucc (eqDecides m n)
+
+
+uncongL : Left x = Left y -> x = y
+uncongL Refl = Refl
+
+uncongR : Right x = Right y -> x = y
+uncongR Refl = Refl
+
+public export
+(EqIsDec a, EqIsDec b) => EqIsDec (Either a b) where
+  eqDecides (Left x) (Left y) with (eqDecides x y) | (x == y)
+    eqDecides (Left x) (Left y) | No p | False = No (p . uncongL)
+    eqDecides (Left x) (Left y) | Yes p | True = Yes (cong Left p)
+  eqDecides (Left x) (Right y) = No absurd
+  eqDecides (Right x) (Left y) = No absurd
+  eqDecides (Right x) (Right y) with (eqDecides x y) | (x == y)
+    eqDecides (Right x) (Right y) | No p | False = No (p . uncongR)
+    eqDecides (Right x) (Right y) | Yes p | True = Yes (cong Right p)
+
+
+
+
+congFst : (x1,y1) = (x2,y2) -> x1 = x2
+congFst Refl = Refl
+
+congSnd : (x1,y1) = (x2,y2) -> y1 = y2
+congSnd Refl = Refl
+
+public export
+(EqIsDec a, EqIsDec b) => EqIsDec (a, b) where
+  eqDecides (x1,y1) (x2,y2) with (eqDecides x1 x2) | (x1 == x2)
+    eqDecides (x1,y1) (x2,y2) | No p | False = No (p . congFst)
+    eqDecides (x1,y1) (x2,y2) | Yes p | True with (eqDecides y1 y2) | (y1 == y2)
+      eqDecides (x1,y1) (x2,y2) | Yes p | True | No q | False = No (q . congSnd)
+      eqDecides (x1,y1) (x1,y1) | Yes Refl | True | Yes Refl | True = Yes Refl
+
+{-
+-- Fails to find an Eq instance for DPair
+public export
+(EqIsDec a, (x : a) -> EqIsDec (b x)) => EqIsDec (DPair a b) where
+  eqDecides (MkDPair x1 y1) (MkDPair x2 y2) = ?what
+-}
+
+
+nilNeqCons : ([] = a :: as) -> Void
+nilNeqCons Refl impossible
+
+consNeqNil : (a :: as = []) -> Void
+consNeqNil Refl impossible
+
+uncongHead : {0 as : List x} -> {0 bs : List x} -> (a :: as = b :: bs) -> a = b
+uncongHead Refl = Refl
+
+uncongTail : {0 as : List x} -> {0 bs : List x} -> (a :: as = b :: bs) -> as = bs
+uncongTail Refl = Refl
+
+public export
+EqIsDec a => EqIsDec (List a) where
+  eqDecides [] [] = Yes Refl
+  eqDecides [] (_ :: _) = No nilNeqCons
+  eqDecides (_ :: _) [] = No consNeqNil
+  eqDecides (x :: xs) (y :: ys) with (eqDecides x y) | (x == y)
+    eqDecides (x :: xs) (y :: ys) | No p | False = No (p . uncongHead)
+    eqDecides (x :: xs) (y :: ys) | Yes p | True with (eqDecides xs ys) | (xs == ys)
+      eqDecides (x :: xs) (y :: ys) | Yes p | True | No q | False = No (q . uncongTail)
+      eqDecides (x :: xs) (x :: xs) | Yes Refl | True | Yes Refl | True = Yes Refl

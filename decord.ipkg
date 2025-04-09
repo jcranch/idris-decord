@@ -1,5 +1,5 @@
 package decord
-version = 0.1.0
+version = 0.2.0
 authors = "James Cranch <cranch@cantab.net>"
 sourceloc = "https://github.com/jcranch/idris-decord"
 license = "BSD3"
